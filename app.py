@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template
+from flask import Flask, request, redirect, render_template, flash
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User, Post
 
@@ -102,7 +102,7 @@ def page_not_found(e):
 
 @app.route('/users/<int:user_id>/posts/new')
 def posts_new_form(user_id):
-    """Show a form to create a new post for a specific user"""
+    """ Creates a new post for a specific user"""
 
     user = User.query.get_or_404(user_id)
     return render_template('posts/new.html', user=user)
@@ -110,7 +110,7 @@ def posts_new_form(user_id):
 
 @app.route('/users/<int:user_id>/posts/new', methods=["POST"])
 def posts_new(user_id):
-    """Handle form submission for creating a new post for a specific user"""
+    """ Creates a new post for a specific user"""
 
     user = User.query.get_or_404(user_id)
     new_post = Post(title=request.form['title'],
@@ -126,7 +126,7 @@ def posts_new(user_id):
 
 @app.route('/posts/<int:post_id>')
 def posts_show(post_id):
-    """Show a page with info on a specific post"""
+    """Shows  info of specific post"""
 
     post = Post.query.get_or_404(post_id)
     return render_template('posts/show.html', post=post)
@@ -134,7 +134,7 @@ def posts_show(post_id):
 
 @app.route('/posts/<int:post_id>/edit')
 def posts_edit(post_id):
-    """Show a form to edit an existing post"""
+    """Edits a existing post"""
 
     post = Post.query.get_or_404(post_id)
     return render_template('posts/edit.html', post=post)
@@ -142,7 +142,7 @@ def posts_edit(post_id):
 
 @app.route('/posts/<int:post_id>/edit', methods=["POST"])
 def posts_update(post_id):
-    """Handle form submission for updating an existing post"""
+    """ Updates a existing post"""
 
     post = Post.query.get_or_404(post_id)
     post.title = request.form['title']
@@ -157,7 +157,7 @@ def posts_update(post_id):
 
 @app.route('/posts/<int:post_id>/delete', methods=["POST"])
 def posts_destroy(post_id):
-    """Handle form submission for deleting an existing post"""
+    """ Deletes a existing post"""
 
     post = Post.query.get_or_404(post_id)
 
