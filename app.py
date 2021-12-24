@@ -19,7 +19,16 @@ db.create_all()
 def root():
     """Homepage / users."""
 
-    return redirect("/users")
+    posts = Post.query.order_by(Post.created_at.desc()).limit(5).all()
+    return render_template("posts/homepage.html", posts=posts)
+
+@app.errorhandler(404)
+def page_not_found(e):
+    """Show 404 NOT FOUND page."""
+
+    return render_template('404.html'), 404
+
+
 
 @app.route('/users')
 def users_index():
@@ -47,6 +56,7 @@ def users_new():
 
     db.session.add(new_user)
     db.session.commit()
+    flash(f"User {new_user.full_name} added.")
 
     return redirect("/users")
 
@@ -78,6 +88,7 @@ def users_update(user_id):
 
     db.session.add(user)
     db.session.commit()
+    flash(f"User {user.full_name} edited.")
 
     return redirect("/users")
 
@@ -89,16 +100,13 @@ def users_destroy(user_id):
     user = User.query.get_or_404(user_id)
     db.session.delete(user)
     db.session.commit()
+    flash(f"User {user.full_name} deleted.")
 
     return redirect("/users")
 
 
 #part two
-@app.errorhandler(404)
-def page_not_found(e):
-    """Show 404 NOT FOUND page."""
 
-    return render_template('404.html'), 404
 
 @app.route('/users/<int:user_id>/posts/new')
 def posts_new_form(user_id):
